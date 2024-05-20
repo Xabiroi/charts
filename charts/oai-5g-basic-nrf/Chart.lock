@@ -1,9 +1,0 @@
-dependencies:
-- name: mysql
-  repository: file://../mysql
-  version: 8.0.31
-- name: oai-nrf
-  repository: file://../oai-nrf
-  version: v2.0.1
-digest: sha256:fba54dfd9d1401f80b841986515f211875c4d9bd809450aea45267e3a7b73786
-generated: "2024-05-13T13:09:33.136889587+02:00"
