@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: traffic-rule
+data:
+  traffic_rule.yaml: |
+      steering-scenario-primary:
+        routeToLocs:
+          - dnai: access
+          - dnai: internet-primary
+      steering-scenario-secondary:
+        routeToLocs:
+          - dnai: access
+          - dnai: internet-secondary
+

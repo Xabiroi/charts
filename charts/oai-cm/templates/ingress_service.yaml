@@ -1,0 +1,46 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: oaicm-ingress-controller
+  annotations:
+    nginx.ingress.kubernetes.io/use-proxy-protocol: "false"
+spec:
+  rules:
+    - http:
+        paths:
+          - path: /notifications
+            pathType: Prefix
+            backend:
+              service:
+                name: oai-cm
+                port:
+                  number: 80
+          - path: /subscribe/notification/amf
+            pathType: Prefix
+            backend:
+              service:
+                name: oai-cm
+                port:
+                  number: 80
+          - path: /subscribe/notification/smf
+            pathType: Prefix
+            backend:
+              service:
+                name: oai-cm
+                port:
+                  number: 80
+          - path: /notification/smf
+            pathType: Prefix
+            backend:
+              service:
+                name: oai-cm
+                port:
+                  number: 80
+          - path: /notification/amf
+            pathType: Prefix
+            backend:
+              service:
+                name: oai-cm
+                port:
+                  number: 80
+
