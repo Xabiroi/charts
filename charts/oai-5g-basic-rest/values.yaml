@@ -1,0 +1,111 @@
+global:
+  nfConfigurationConfigMap: oai-5g-basic-rest
+  clusterIpServiceIpAllocation: true #this will allocate ip-address to cluster Ip service
+  waitForNRF: false # true
+  http2Param: "--http2-prior-knowledge"  # if waitForNRF is true and http2 is used for all NF then this param is needed
+  timeout: 1
+oai-udr:
+  enabled: true
+  kubernetesType: Vanilla #Openshift/Vanilla Vanilla for Upstream Kubernetes
+  nfimage:  # image name either locally present or in a public/private repository
+    repository: docker.io/oaisoftwarealliance/oai-udr           ## The image will be pulled from dockerhub
+    version: v2.0.1                                     ## The branch to be used to pull from dockerhub
+    # pullPolicy: IfNotPresent or Never or Always
+    pullPolicy: IfNotPresent
+  includeTcpDumpContainer: false #only for taking pcaps inside network function pod
+  imagePullSecrets:
+    - name: "regcred"
+  config:
+    logLevel: "debug"   #allowed info/error/debug
+  nodeSelector: {}
+oai-udm:
+  enabled: true
+  kubernetesType: Vanilla #Openshift/Vanilla Vanilla for Upstream Kubernetes
+  nfimage:  # image name either locally present or in a public/private repository
+    repository: docker.io/oaisoftwarealliance/oai-udm           ## The image will be pulled from dockerhub
+    version: v2.0.1                                     ## The branch to be used to pull from dockerhub
+    # pullPolicy: IfNotPresent or Never or Always
+    pullPolicy: IfNotPresent
+  includeTcpDumpContainer: false #only for taking pcaps inside network function pod
+  imagePullSecrets:
+    - name: "regcred"
+  config:
+    logLevel: "debug"   #allowed info/error/debug
+  nodeSelector: {}
+oai-ausf:
+  enabled: true
+  kubernetesType: Vanilla #Openshift/Vanilla Vanilla for Upstream Kubernetes
+  nfimage:  # image name either locally present or in a public/private repository
+    repository: docker.io/oaisoftwarealliance/oai-ausf           ## The image will be pulled from dockerhub
+    version: v2.0.1                                     ## The branch to be used to pull from dockerhub
+    # pullPolicy: IfNotPresent or Never or Always
+    pullPolicy: IfNotPresent
+  includeTcpDumpContainer: false #only for taking pcaps inside network function pod
+  imagePullSecrets:
+    - name: "regcred"
+  config:
+    logLevel: "debug"   #allowed info/error/debug
+  nodeSelector: {}
+oai-amf:
+  enabled: true #true
+  kubernetesType: Vanilla #Openshift/Vanilla Vanilla for Upstream Kubernetes
+  nfimage:  # image name either locally present or in a public/private repository
+    repository: docker.io/oaisoftwarealliance/oai-amf           ## The image will be pulled from dockerhub
+    version: v2.0.1                                   ## The branch to be used to pull from dockerhub
+    # pullPolicy: IfNotPresent or Never or Always
+    pullPolicy: IfNotPresent
+  includeTcpDumpContainer: false #only for taking pcaps inside network function pod
+  imagePullSecrets:
+    - name: "regcred"
+  multus:
+    ## If you don't want to add a default route in your pod then replace this field with ""
+    defaultGateway: ""
+    n2Interface:
+      create: true
+      Ipadd: "192.168.70.132"
+      Netmask: "24"
+      # #name inside the pod is hardcoded right now
+      # name: "n2"
+      ## If you do not have a gateway leave the field empty
+      Gateway:
+      ## If you do not want to add any routes in your pod then leave this field empty
+      #routes: [{'dst': '192.168.70.201/32','gw': '192.168.70.202'}]
+      hostInterface: "demo-oai" # Interface of the host machine on which this pod will be scheduled
+  nodeSelector: {}
+
+oai-smf:
+  enabled: true #true
+  kubernetesType: Vanilla #Openshift/Vanilla Vanilla for Upstream Kubernetes
+  nfimage:  # image name either locally present or in a public/private repository
+    repository: docker.io/oaisoftwarealliance/oai-smf           ## The image will be pulled from dockerhub
+    version: v2.0.1                         ## The branch to be used to pull from dockerhub
+    # pullPolicy: IfNotPresent or Never or Always
+    pullPolicy: IfNotPresent
+  includeTcpDumpContainer: false #only for taking pcaps inside network function pod
+  multus:
+    ## If you don't want to add a default route in your pod then replace this field with ""
+    defaultGateway: ""
+    n4Interface:
+      create: true
+      Ipadd: "192.168.70.202"
+      Netmask: "24"
+      ## If you do not have a gateway leave the field empty
+      Gateway: ""
+      ## If you do not want to add any routes in your pod then leave this field empty
+      routes: [{'dst': '192.168.70.201/32','gw': '192.168.70.202'}]
+      hostInterface: "demo-oai"
+  nodeSelector: {}
+  imagePullSecrets:
+    - name: "regcred"
+  nodeSelector: {}
+oai-pcf:
+  enabled: true
+  kubernetesType: Vanilla #Openshift/Vanilla Vanilla for Upstream Kubernetes
+  nfimage:  # image name either locally present or in a public/private repository
+    repository: docker.io/oaisoftwarealliance/oai-pcf:v2.0.1 ## The image will be pulled from dockerhub
+    version: v2.0.1                         ## The branch to be used to pull from dockerhub
+    # pullPolicy: IfNotPresent or Never or Always
+    pullPolicy: IfNotPresent
+  includeTcpDumpContainer: false #only for taking pcaps inside network function pod
+vpp-upf:
+  enabled: true

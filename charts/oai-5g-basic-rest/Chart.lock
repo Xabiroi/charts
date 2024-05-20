@@ -1,0 +1,21 @@
+dependencies:
+- name: oai-udr
+  repository: file://../oai-udr
+  version: v2.0.1
+- name: oai-udm
+  repository: file://../oai-udm
+  version: v2.0.1
+- name: oai-ausf
+  repository: file://../oai-ausf
+  version: v2.0.1
+- name: oai-amf
+  repository: file://../oai-amf
+  version: v2.0.1
+- name: oai-smf
+  repository: file://../oai-smf
+  version: v2.0.1
+- name: oai-pcf
+  repository: file://../oai-pcf
+  version: v2.0.1
+digest: sha256:10f0465f7ca943f672335e3d9afc857544056222aab61d68b2754ca75d54e95f
+generated: "2024-05-13T14:38:54.499483302+02:00"

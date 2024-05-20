@@ -1,0 +1,34 @@
+apiVersion: v2
+name: oai-5g-basic-nrf
+type: application
+icon: http://www.openairinterface.org/wp-content/uploads/2015/06/cropped-oai_final_logo.png
+version: v2.0.1
+description: OAI 5G Release 16 Core Network
+
+appVersion: v2.0.1
+
+keywords:
+  - 5GCN
+  - AMF
+  - SMF
+  - NRF
+  - UPF
+  - UDM
+  - UDR
+  - AUSF
+#  - Traffic_server
+
+maintainers:
+  - name:  OPENAIRINTERFACE
+    email: contact@openairinterface.org
+
+dependencies:
+- condition: mysql.enabled
+  name: mysql
+  repository: "file://../mysql"
+  version: 8.0.31
+- condition: oai-nrf.enabled
+  name: oai-nrf
+  repository: "file://../oai-nrf"
+  version: v2.0.1
+
