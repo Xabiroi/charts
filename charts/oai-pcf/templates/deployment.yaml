@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -f docker-compose-basic-vpp-pcf-steering.yaml
+    kompose.version: 1.32.0 (765fde254)
+  labels:
+    io.kompose.service: oai-pcf
+  name: oai-pcf
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: oai-pcf
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert -f docker-compose-basic-vpp-pcf-steering.yaml
+        kompose.version: 1.32.0 (765fde254)
+      labels:
+        io.kompose.network/demo-oai-public-net: "true"
+        io.kompose.service: oai-pcf
+    spec:
+      containers:
+        - env:
+            - name: TZ
+              value: Europe/Paris
+          image: oaisoftwarealliance/oai-pcf:v2.0.1
+          name: oai-pcf
+          ports:
+#            - containerPort: 80
+#              protocol: TCP
+            - containerPort: 8080
+              protocol: TCP
+          volumeMounts:
+            - mountPath: /openair-pcf/policies/pcc_rules/
+              name: oai-pcf-rules
+            - mountPath: /openair-pcf/policies/policy_decisions/
+              name: oai-pcf-decision
+            - mountPath: /openair-pcf/policies/traffic_rules/
+              name: oai-pcf-traffic
+            - mountPath: /openair-pcf/etc/
+              name: oai-pcf-config
+      restartPolicy: Always
+      volumes:
+        - name: oai-pcf-rules
+          configMap:
+            name: pcc-rules
+        - name: oai-pcf-decision
+          configMap:
+            name: policy-decision
+        - name: oai-pcf-traffic
+          configMap:
+            name: traffic-rule
+        - name: oai-pcf-config
+          configMap:
+            name: ulcl-config
+

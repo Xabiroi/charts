@@ -1,0 +1,65 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.32.0 (765fde254)
+  labels:
+    io.kompose.service: oai-cm
+  name: oai-cm
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: oai-cm
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert
+        kompose.version: 1.32.0 (765fde254)
+      labels:
+        io.kompose.network/demo-oai-public-net: "true"
+        io.kompose.service: oai-cm
+    spec:
+      containers:
+        - env:
+            - name: AMF_HOST
+              value: oai-amf
+            - name: CONFIG_FILE
+              value: /usr/local/etc/configuration.yaml
+            - name: DATABASE_HOST
+              value: mongodb
+            - name: DATABASE_PASSWORD
+              value: linux
+            - name: DATABASE_PORT
+              value: "27017"
+            - name: DATABASE_USER
+              value: admin
+            - name: HOST
+              value: 0.0.0.0 # 192.168.70.168
+            - name: LOG_LEVEL
+              value: debug
+            - name: MOUNT_CONFIG
+              value: "no"
+            - name: PORT
+              value: "80"
+            - name: RESET_DATABASE
+              value: "yes"
+            - name: SMF_HOST
+              value: oai-smf
+          image: localhost:32000/oai-cm:debug #oaisoftwarealliance/oai-cm:latest
+          imagePullPolicy: Always  # Set image pull policy to always
+          livenessProbe:
+            exec:
+              command:
+                - /bin/sh -c "pgrep oai_cm"
+            failureThreshold: 5
+            periodSeconds: 5
+            timeoutSeconds: 5
+          name: oai-cm
+          ports:
+            - containerPort: 80
+              name: http
+              protocol: TCP
+      restartPolicy: Always
+

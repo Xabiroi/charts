@@ -1,0 +1,157 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -f docker-compose-basic-vpp-pcf-steering.yaml
+    kompose.version: 1.32.0 (765fde254)
+  labels:
+    app.kubernetes.io: oai-upf
+  name: oai-upf
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: oai-5g-basic
+      app.kubernetes.io/name: oai-upf
+      app.kubernetes.io/version: v2.0.1
+  template:
+    metadata:
+      labels:
+        {{- include "oai-upf.selectorLabels" . | nindent 8 }}
+    {{- if .Values.multus.n3Interface.create }}
+      annotations:
+        k8s.v1.cni.cncf.io/networks: >-
+          [{
+                 "name": "{{ .Chart.Name }}-n3-2",
+                 "interface": "n3-2"
+                {{- if .Values.multus.defaultGateway }}
+                 ,"default-route": ["{{ .Values.multus.defaultGateway }}"]
+                {{- end }}
+                {{- if .Values.multus.n3Interface.Gateway }}
+                ,"gateway": "{{ .Values.multus.n3Interface.Gateway }}"
+                {{- end }}
+          }
+          {{- if .Values.multus.n4Interface.create }}
+          ,{
+                 "name": "{{ .Chart.Name }}-n4-1",
+                 "interface": "n4-1"
+                {{- if .Values.multus.n4Interface.Gateway }}
+                ,"gateway": "{{ .Values.multus.n4Interface.Gateway }}"
+                {{- end }}
+          }
+          {{- end }}
+          {{- if .Values.multus.n6Interface.create }}
+          ,{
+                 "name": "{{ .Chart.Name }}-n6-3",
+                 "interface": "n6-3"
+                {{- if .Values.multus.n6Interface.Gateway }}
+                ,"gateway": "{{ .Values.multus.n6Interface.Gateway }}"
+                {{- end }}
+          }
+          {{- end }}
+          {{- if .Values.multus.n6Interface2.create }}
+          ,{
+                 "name": "{{ .Chart.Name }}-n6-4",
+                 "interface": "n6-4"
+                {{- if .Values.multus.n6Interface2.Gateway }}
+                ,"gateway": "{{ .Values.multus.n6Interface2.Gateway }}"
+                {{- end }}
+          }
+          {{- end }}
+          ]
+    {{- end }}
+        kompose.cmd: kompose convert -f docker-compose-basic-vpp-pcf-steering.yaml
+        kompose.version: 1.32.0 (765fde254)
+      labels:
+        app.kubernetes.io/instance: oai-5g-basic
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/name: oai-upf
+        app.kubernetes.io/version: v2.0.1
+#      io.kompose.network/demo-oai-public-net: "true"
+#      io.kompose.network/oai-public-access: "true"
+#      io.kompose.network/oai-public-core-pri: "true"
+#      io.kompose.network/oai-public-core-sec: "true"
+        app.kubernetes.io: oai-upf #vpp-upf
+
+    spec:
+      containers:
+        - env:
+            - name: DNN
+              value: default
+            - name: HTTP_VERSION
+              value: "2"
+            - name: IF_1_IP
+              value: 192.168.70.201
+            - name: IF_1_IP_REMOTE
+              value: 192.168.70.161 #10.86.70.52 #oai-smf (hosts?)
+            - name: IF_1_TYPE
+              value: N4 #
+            - name: IF_2_DNAI
+              value: access
+            - name: IF_2_IP
+              value: 192.168.72.201
+            - name: IF_2_NWI
+              value: access.oai.org
+            - name: IF_2_IP_REMOTE
+              value: 192.168.72.160 #LA IP DE LA RAN
+            - name: IF_2_TYPE
+              value: N3 #
+            - name: IF_3_DNAI
+              value: internet-primary
+            - name: IF_3_IP
+              value: 192.168.73.201
+            - name: IF_3_IP_REMOTE
+              value: 192.168.73.135
+            - name: IF_3_NWI
+              value: internet.oai.org.pri
+            - name: IF_3_TYPE
+              value: N6 #
+            - name: IF_4_DNAI
+              value: internet-secondary
+            - name: IF_4_IP
+              value: 192.168.74.201
+            - name: IF_4_IP_REMOTE
+              value: 192.168.74.135
+            - name: IF_4_NWI
+              value: internet.oai.org.sec
+            - name: IF_4_TYPE
+              value: N6 #
+            - name: MCC
+              value: "208" #"208"
+            - name: MNC
+              value: "95" #"95"
+            - name: NAME
+              value: OAI-UPF #VPP
+            - name: NRF_IP_ADDR
+              value: 10.86.70.50 #oai-nrf (hosts?)
+            - name: NRF_PORT
+              value: "80" #"8080"
+            - name: REALM
+              value: 3gppnetwork.org
+            - name: REGISTER_NRF
+              value: "yes"
+            - name: SNSSAI_SD
+              value: "123" #"123"
+            - name: SNSSAI_SST
+              value: "222" #"222"
+            - name: VPP_CORE_WORKER
+              value: "1"
+            - name: VPP_MAIN_CORE
+              value: "0"
+            - name: VPP_PLUGIN_PATH
+              value: /usr/lib/x86_64-linux-gnu/vpp_plugins/
+          #image: localhost:32000/oai-upf-vpp:debug #oaisoftwarealliance/oai-cm:latest
+          imagePullPolicy: Always  # Set image pull policy to always
+          image: oaisoftwarealliance/oai-upf-vpp:v2.0.1 #v1.5.0 #v2.0.1
+          livenessProbe:
+            exec:
+              command:
+                #- /bin/bash -c "sleep infinity & wait"
+                - /bin/bash -c "pgrep vpp"
+            failureThreshold: 5
+            periodSeconds: 10
+            timeoutSeconds: 5
+          name: oai-upf
+          securityContext:
+            privileged: true
+      restartPolicy: Always
