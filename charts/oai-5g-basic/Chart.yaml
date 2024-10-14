@@ -6,7 +6,6 @@ version: v2.0.1
 description: OAI 5G Release 16 Core Network
 
 appVersion: v2.0.1
-
 keywords:
   - 5GCN
   - AMF
@@ -15,8 +14,6 @@ keywords:
   - UPF
   - UDM
   - UDR
-  - AUSF
-#  - Traffic_server
 
 maintainers:
   - name:  OPENAIRINTERFACE
