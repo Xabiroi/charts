@@ -215,3 +215,5 @@ oai-pcf:
     # pullPolicy: IfNotPresent or Never or Always
     pullPolicy: IfNotPresent
   includeTcpDumpContainer: false #only for taking pcaps inside network function pod
+  
+replicaCount: 1

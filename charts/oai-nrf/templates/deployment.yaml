@@ -5,7 +5,7 @@ metadata:
   labels:
     {{- include "oai-nrf.labels" . | nindent 4 }}
 spec:
-  replicas: 1
+  replicas: {{ .Values.replicaCount | default 1 }}
   selector:
     matchLabels:
       {{- include "oai-nrf.selectorLabels" . | nindent 6 }}
